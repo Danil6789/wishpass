@@ -1,0 +1,2 @@
+export const ADD_WISHPASS = 'ADD_WiSHPASS';
+export const DELETE_WISHPASS = 'DELETE_WiSHPASS';
