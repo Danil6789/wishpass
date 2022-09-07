@@ -1,17 +1,14 @@
 import * as React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { Button, View, Text, StyleSheet, FlatList, TouchableOpacity, TouchableHighlight } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator} from '@react-navigation/native-stack';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {connect} from 'react-redux';
 import { SwipeListView } from 'react-native-swipe-list-view';
-import {deleteWish} from '../redux/actions';
+import {deleteWish, addWish} from '../redux/actions';
 
 
-function Wishlists({ navigation, route, wishlist, deleteWish} )
+function Wishlists({navigation, route, wishlist, deleteWish} )
 {
-  console.log('+route+', wishlist)
+    console.log('wishlist',wishlist)
+    
 
   function removeDuplicates(data, key) {
   
@@ -34,27 +31,26 @@ const closeRow = (rowMap, rowKey) => {
         rowMap[rowKey].closeRow();
     }
 };
-const deleteWishItem = id => {
-    console.log('--index--', id)
-    deleteWish(id)
-}
 
 
-const deleteRow = (rowMap, rowKey) => {
-    closeRow(rowMap, rowKey);
-    const newData = [...listData];
-    const prevIndex = listData.findIndex(item => item.key === rowKey);
-    newData.splice(prevIndex, 1);
-    setListData(newData);
-};
+
+// const deleteRow = (rowMap, rowKey) => {
+//     closeRow(rowMap, rowKey);
+//     const newData = [...listData];
+//     const prevIndex = listData.findIndex(item => item.key === rowKey);
+//     newData.splice(prevIndex, 1);
+//     setListData(newData);
+// };
 
 const onRowDidOpen = rowKey => {
     console.log('This row opened', rowKey);
 };
 
-const renderItem = data => (
-    <TouchableHighlight
-        onPress={() => console.log('You touched me')}
+const renderItem = data => {
+
+    return(
+        <TouchableHighlight 
+        onPress={() => navigation.navigate('GroupItems', {item: data.item})}
         style={styles.rowFront}
         underlayColor={'#AAA'}
     >
@@ -62,28 +58,38 @@ const renderItem = data => (
             <Text>{data.item.group}</Text>
         </View>
     </TouchableHighlight>
-);
+    );
 
-const renderHiddenItem = (data, rowMap) => {
-        console.log('+id+', data);
+}
+
+
+const deleteWishItem = index => {
+    deleteWish(index)
+}
+
+const renderHiddenItem = (item, rowMap) => {
+
     return (
         <View style={styles.rowBack}>
         <TouchableOpacity
             style={[styles.backRightBtn, styles.backRightBtnRight]}
-            onPress={() => deleteWishItem(data.index)}
+            onPress={() => { 
+                deleteD(listGroup, item.item.id)
+            }}
         >
             <Text style={styles.backTextWhite}>Delete</Text>
         </TouchableOpacity>
     </View>
     );
 }
-    
 
+const wishlistGroup = removeDuplicates(wishlist.map((item, index)=>({ id: index, group:item.group})), item => item.group)
+const [listGroup, setListGroup] = React.useState(wishlistGroup)
 
+const deleteD = (listgroup, id) => {
+    setListGroup(listgroup.filter((item) => (item.id != id) ))
+}
 
-
-	const wishlistGroup = removeDuplicates(wishlist.map((item, index)=>({ id: index, group:item.group})), item => item.group)
-  console.log(wishlistGroup);
 	return (  
         <View style={styles.container}>
           <SwipeListView
@@ -101,7 +107,7 @@ const renderHiddenItem = (data, rowMap) => {
           <Text>Wishlists</Text>
           <Button
             title="Добавить вишлист"
-            onPress={() => navigation.navigate('AddWishlist')}
+            onPress={() => {navigation.navigate('AddWishlist')}}
           />
       </View>
 
@@ -134,8 +140,10 @@ const mapStateToProps = (state, ownProps) => {
     wishlist: state.wishes.wishlist,
   }
 }
+
+const mapDispatchToProps = { addWish, deleteWish }
   
-export default connect(mapStateToProps, null)(Wishlists);
+export default connect(mapStateToProps, mapDispatchToProps)(Wishlists);
 
 const styles = StyleSheet.create({
   container: {

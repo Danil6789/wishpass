@@ -1,5 +1,5 @@
 import {ADD_WISHPASS, DELETE_WISHPASS} from '../constants';
-let nextId = 1;
+let nextId = 5;
 
 export const addWish = (title, group) => ({
     type: ADD_WISHPASS,

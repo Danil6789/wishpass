@@ -6,18 +6,10 @@ import { createNativeStackNavigator} from '@react-navigation/native-stack';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { SwipeListView } from 'react-native-swipe-list-view';
 import {connect} from 'react-redux';
-
+import {deleteWish} from '../redux/actions';
 
 function AllWishes({wishlist})
 {
-	console.log('---=wishlist+==', wishlist)
-	function removeDuplicates(data, key) {
-  
-		return [
-		  ...new Map(data.map(item => [key(item), item])).values()
-		]
-	  
-	  }
 
 
 	const [listData, setListData] = React.useState(
@@ -32,6 +24,12 @@ function AllWishes({wishlist})
 		}
 	};
 	
+
+	const deleteWishItem = index => {
+		//.log('--index--', index)
+		deleteWish(id)
+	}
+
 	const deleteRow = (rowMap, rowKey) => {
 		closeRow(rowMap, rowKey);
 		const newData = [...listData];
@@ -46,7 +44,6 @@ function AllWishes({wishlist})
 	
 	const renderItem = data => (
 		<TouchableHighlight
-			onPress={() => console.log('You touched me')}
 			style={styles.rowFront}
 			underlayColor={'#AAA'}
 		>
@@ -56,11 +53,11 @@ function AllWishes({wishlist})
 		</TouchableHighlight>
 	);
 	
-	const renderHiddenItem = (data, rowMap) => (
+	const renderHiddenItem = (item, rowMap) => (
 		<View style={styles.rowBack}>
 			<TouchableOpacity
 				style={[styles.backRightBtn, styles.backRightBtnRight]}
-				onPress={() => deleteRow(rowMap, data.item.key)}
+				onPress={() => deleteWishItem(item.item.id)}
 			>
 				<Text style={styles.backTextWhite}>Delete</Text>
 			</TouchableOpacity>

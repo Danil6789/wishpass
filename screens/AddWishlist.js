@@ -1,14 +1,10 @@
 import * as React from 'react';
-import { StatusBar } from 'expo-status-bar';
 import { Button, View, Text, StyleSheet, TextInput, FlatList } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator} from '@react-navigation/native-stack';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import {Provider, connect} from 'react-redux';
 import { addWish, deleteWish } from '../redux/actions';
 
 
-function AddWishlist({addWish, deleteWish, wishlist, navigation},)
+function AddWishlist({addWish, deleteWish, wishlist, navigation})
 {
 	const [title, setTitle] = React.useState('');
 	const [group, setGroup] = React.useState('');
@@ -16,10 +12,9 @@ function AddWishlist({addWish, deleteWish, wishlist, navigation},)
 	const addWishItem = () => {
 		addWish(title, group);
 		setTitle('');
-		navigation.navigate('Wishlists', {wishlist: wishlist, title: title});
+		navigation.navigate('Wishlists');
 	}
 
-	console.log('+wishList+', wishlist);
 	return (
 		<View>
 			<Text>Title Wish</Text>
